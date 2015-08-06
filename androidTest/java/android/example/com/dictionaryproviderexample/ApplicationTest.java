@@ -1,4 +1,4 @@
-package android.example.com.dictionaryproviderexample;
+package com.vrj.udacity.dictionaryproviderexample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
