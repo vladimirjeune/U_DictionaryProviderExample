@@ -30,6 +30,18 @@ import android.widget.ListView;
  */
 public class MainActivity extends ActionBarActivity {
 
+	// Array of Strings of headers from table we are using
+	private static final String [] HEADERS = {
+			Words.WORD,
+			Words.FREQUENCY
+	};   
+
+	// Array of int for id of TextViews for ListView
+	private static final int[] VIEWS = {
+			android.R.id.text1,  // This is the TextView in the .two_line_list_item
+			android.R.id.text2  // This is the TextView in the .two_line_list_item
+	};
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +56,6 @@ public class MainActivity extends ActionBarActivity {
         // Get a Cursor containing all of the rows in the Words table
         Cursor cursor = resolver.query(UserDictionary.Words.CONTENT_URI, null, null, null, null);
         
-        final int numberOfRows = 2;
-        
-        // Array of Strings of headers from table we are using
-        String [] headers = new String[numberOfRows];
-        headers[0] = cursor.getColumnName(cursor.getColumnIndex(Words.WORD));
-        headers[1] = cursor.getColumnName(cursor.getColumnIndex(Words.FREQUENCY));   
-        
-        // Array of int for id of TextViews for ListView
-        int[] views = new int[numberOfRows];
-        views[0] = android.R.id.text1;  // This is the TextView in the .two_line_list_item
-        views[1] = android.R.id.text2;  // This is the TextView in the .two_line_list_item
-        
         SimpleCursorAdapter sca = new SimpleCursorAdapter(
         		// Context
         		this,
@@ -64,9 +64,9 @@ public class MainActivity extends ActionBarActivity {
         		// The Cursor
         		cursor, 
         		// String[] of the headers from the table that we want to display
-        		headers, 
+        		HEADERS, 
         		// int[] of the TextViews that we want to display the table values in, in order
-        		views, 
+        		VIEWS, 
         		// Flags
         		0);
         
