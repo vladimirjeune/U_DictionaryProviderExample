@@ -50,14 +50,18 @@ public class MainActivity extends ActionBarActivity {
             dictTextView.setText("The UserDictionary contains ");
             // -- YOUR CODE BELOW HERE -- //
             dictTextView.append("" + cursor.getCount() + " words\n");
-            dictTextView.append("COLUMNS _id - frequency - word\n");
+            dictTextView.append("COLUMNS " 
+            		+ Words._ID + sepDash 
+            		+ Words.FREQUENCY + sepDash 
+            		+ Words.WORD + "\n");
             
-            // Obtain column indices
-            int idInt        = cursor.getColumnIndex(UserDictionary.Words._ID);
-            int frequencyInt = cursor.getColumnIndex(UserDictionary.Words.FREQUENCY);
-            int wordInt      = cursor.getColumnIndex(UserDictionary.Words.WORD);
+            // Get the index of the column containing the actual words, using
+            // UserDictionary.Words.WORD, which is the header of the word column.
+            int idInt        = cursor.getColumnIndex(Words._ID);
+            int frequencyInt = cursor.getColumnIndex(Words.FREQUENCY);
+            int wordInt      = cursor.getColumnIndex(Words.WORD);
 
-            // Print out rows you wanted.
+            // Iterates through all returned rows in the cursor.
             while ( cursor.moveToNext() != false ) {
             	dictTextView.append(
             			"" 
@@ -66,19 +70,6 @@ public class MainActivity extends ActionBarActivity {
             			+ cursor.getString(wordInt) 
             			+ "\n") ;
             	
-            }
-            
-
-            // Get the index of the column containing the actual words, using
-            // UserDictionary.Words.WORD, which is the header of the word column.
-            int wordColumn = cursor.getColumnIndex(UserDictionary.Words.WORD);
-
-            // Iterates through all returned rows in the cursor.
-            while (cursor.moveToNext()) {
-                // Use that index to extract the String value of the word
-                // at the current row the cursor is on.
-                String word = cursor.getString(wordColumn);
-                dictTextView.append(("\n" + word));
             }
         } finally {
             // Always close your cursor to avoid memory leaks
