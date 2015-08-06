@@ -20,9 +20,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.UserDictionary;
 import android.provider.UserDictionary.Words;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.widget.TextView;
+import android.widget.ListView;
 
 /**
  * This is the central activity for the Provider Dictionary Example App. The purpose of this app is
@@ -35,8 +35,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get the TextView which will be populated with the Dictionary ContentProvider data.
-        TextView dictTextView = (TextView) findViewById(R.id.dictionary_text_view);
+        // Get the ListView which will be populated with the Dictionary ContentProvider data.
+        ListView listView = (ListView) findViewById(R.id.dictionary_list_view);
 
         // Get the ContentResolver which will send a message to the ContentProvider
         ContentResolver resolver = getContentResolver();
@@ -44,39 +44,34 @@ public class MainActivity extends ActionBarActivity {
         // Get a Cursor containing all of the rows in the Words table
         Cursor cursor = resolver.query(UserDictionary.Words.CONTENT_URI, null, null, null, null);
         
-        // Surround the cursor in a try statement so that the finally block will eventually execute
-        try {
-        	String sepDash = " - ";
-            dictTextView.setText("The UserDictionary contains ");
-            // -- YOUR CODE BELOW HERE -- //
-            dictTextView.append("" + cursor.getCount() + " words\n");
-            dictTextView.append("COLUMNS " 
-            		+ Words._ID + sepDash 
-            		+ Words.FREQUENCY + sepDash 
-            		+ Words.WORD + "\n");
-            
-            // Get the index of the column containing the actual words, using
-            // UserDictionary.Words.WORD, which is the header of the word column.
-            int idInt        = cursor.getColumnIndex(Words._ID);
-            int frequencyInt = cursor.getColumnIndex(Words.FREQUENCY);
-            int wordInt      = cursor.getColumnIndex(Words.WORD);
-
-            // Iterates through all returned rows in the cursor.
-            while ( cursor.moveToNext() != false ) {
-            	dictTextView.append(
-            			"" 
-            			+ cursor.getString(idInt) + sepDash 
-            			+ cursor.getString(frequencyInt) + sepDash 
-            			+ cursor.getString(wordInt) 
-            			+ "\n") ;
-            	
-            }
-        } finally {
-            // Always close your cursor to avoid memory leaks
-            cursor.close();
-        }
+        final int numberOfRows = 2;
         
-        // Show contents of CONTENT_URI
-        Log.i("TEST", Words.CONTENT_URI.toString());  // Words contains user-defined words
+        // Array of Strings of headers from table we are using
+        String [] headers = new String[numberOfRows];
+        headers[0] = cursor.getColumnName(cursor.getColumnIndex(Words.WORD));
+        headers[1] = cursor.getColumnName(cursor.getColumnIndex(Words.FREQUENCY));   
+        
+        // Array of int for id of TextViews for ListView
+        int[] views = new int[numberOfRows];
+        views[0] = android.R.id.text1;  // This is the TextView in the .two_line_list_item
+        views[1] = android.R.id.text2;  // This is the TextView in the .two_line_list_item
+        
+        SimpleCursorAdapter sca = new SimpleCursorAdapter(
+        		// Context
+        		this,
+        		// TextView type that will populate this listview
+        		android.R.layout.two_line_list_item,
+        		// The Cursor
+        		cursor, 
+        		// String[] of the headers from the table that we want to display
+        		headers, 
+        		// int[] of the TextViews that we want to display the table values in, in order
+        		views, 
+        		// Flags
+        		0);
+        
+        // Set the CursorAdapter for this ListView
+        listView.setAdapter(sca);
+        
     }
 }
